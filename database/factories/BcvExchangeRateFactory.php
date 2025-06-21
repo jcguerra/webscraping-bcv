@@ -52,9 +52,13 @@ class BcvExchangeRateFactory extends Factory
      */
     public function old(): static
     {
+        $daysAgo = rand(14, 60); // Between 2 weeks and 2 months ago
+        $valueDateAgo = now()->subDays($daysAgo);
+        $scrapedAtAgo = now()->subDays($daysAgo); // Same day for simplicity
+        
         return $this->state(fn (array $attributes) => [
-            'value_date' => now()->subWeeks(rand(1, 10)),
-            'scraped_at' => now()->subWeeks(rand(1, 10)),
+            'value_date' => $valueDateAgo->toDateString(),
+            'scraped_at' => $scrapedAtAgo->toDateTimeString(),
         ]);
     }
 
