@@ -11,6 +11,13 @@
   <img src="https://img.shields.io/badge/Docker-blue?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
 </p>
 
+<p align="center">
+  <img src="https://img.shields.io/badge/Tests-74_passed-28A745?style=for-the-badge&logo=checkmarx&logoColor=white" alt="74 Tests">
+  <img src="https://img.shields.io/badge/Coverage-64%25-FFA500?style=for-the-badge&logo=codecov&logoColor=white" alt="64% Coverage">
+  <img src="https://img.shields.io/badge/Status-Production_Ready-28A745?style=for-the-badge&logo=checkmarx&logoColor=white" alt="Production Ready">
+  <img src="https://img.shields.io/badge/Automation-Fully_Automated-00D4AA?style=for-the-badge&logo=robot&logoColor=white" alt="Fully Automated">
+</p>
+
 ## 📋 Description
 
 Complete web scraping system developed in Laravel 12 that automatically extracts USD exchange rates from the official BCV website (https://www.bcv.org.ve/). 
@@ -71,6 +78,15 @@ php artisan bcv:scrape clear
 # Schedule information
 php artisan bcv:scrape time
 ```
+
+### 🧪 **Complete Automated Testing**
+- **74 automated tests** (52 unit + 22 feature)
+- **64% coverage** of the system with detailed metrics
+- **Advanced factory** with multiple data states
+- **Mocking and reflection** for robust tests
+- **Performance tests** with benchmarks
+- **Robustness tests** for edge cases
+- **Automated quality validation** of code
 
 ## 🚀 Installation and Configuration
 
