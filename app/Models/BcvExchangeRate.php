@@ -34,6 +34,7 @@ class BcvExchangeRate extends Model
         'value_date' => 'date',
         'scraped_at' => 'datetime',
         'usd_rate' => 'decimal:4',
+        'raw_data' => 'array',
     ];
 
     /**
@@ -41,11 +42,12 @@ class BcvExchangeRate extends Model
      */
     
     /**
-     * Obtener la tasa más reciente
+     * Obtener la tasa más reciente por fecha de valor y fecha de scraping
      */
-    public function scopeLatest($query)
+    public function scopeByLatestValue($query)
     {
-        return $query->orderBy('value_date', 'desc')->orderBy('scraped_at', 'desc');
+        return $query->orderBy('value_date', 'desc')
+                    ->orderBy('scraped_at', 'desc');
     }
 
     /**
@@ -62,6 +64,14 @@ class BcvExchangeRate extends Model
     public function scopeToday($query)
     {
         return $query->whereDate('value_date', Carbon::today());
+    }
+
+    /**
+     * Obtener la tasa actual más reciente
+     */
+    public function scopeCurrent($query)
+    {
+        return $query->latest('scraped_at');
     }
 
     /**
