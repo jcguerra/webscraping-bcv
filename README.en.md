@@ -18,6 +18,28 @@
   <img src="https://img.shields.io/badge/Quality-Production_Ready-00D4AA?style=for-the-badge&logo=robot&logoColor=white" alt="Production Ready">
 </p>
 
+## 📚 Table of Contents
+
+- [📋 Description](#-description)
+- [✨ Key Features](#-key-features)
+- [🚀 Installation and Configuration](#-installation-and-configuration)
+- [📊 Database Structure](#-database-structure)
+- [🎯 System Usage](#-system-usage)
+  - [🌐 REST APIs](#-rest-apis)
+  - [⚡ Artisan Commands](#-artisan-commands)
+  - [🖥️ Web Dashboard](#️-web-dashboard)
+- [⏰ Automatic Scheduling](#-automatic-scheduling)
+- [🏗️ System Architecture](#️-system-architecture)
+- [🔧 Technologies Used](#-technologies-used)
+- [📈 Monitoring and Logs](#-monitoring-and-logs)
+- [🛠️ Development and Testing](#️-development-and-testing)
+- [🚀 Production Deployment](#-production-deployment)
+- [📄 Additional Documentation](#-additional-documentation)
+- [🤝 Contributing](#-contributing)
+- [📋 Changelog](#-changelog)
+- [📞 Support](#-support)
+- [📜 License](#-license)
+
 ## 📋 Description
 
 Complete web scraping system developed in Laravel 12 that automatically extracts USD exchange rates from the official BCV website (https://www.bcv.org.ve/). 

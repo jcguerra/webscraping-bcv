@@ -18,6 +18,28 @@
   <img src="https://img.shields.io/badge/Quality-Production_Ready-00D4AA?style=for-the-badge&logo=robot&logoColor=white" alt="Production Ready">
 </p>
 
+## 📚 Índice de Contenido
+
+- [📋 Descripción](#-descripción)
+- [✨ Características Principales](#-características-principales)
+- [🚀 Instalación y Configuración](#-instalación-y-configuración)
+- [📊 Estructura de Base de Datos](#-estructura-de-base-de-datos)
+- [🎯 Uso del Sistema](#-uso-del-sistema)
+  - [🌐 APIs REST](#-apis-rest)
+  - [⚡ Comandos Artisan](#-comandos-artisan)
+  - [🖥️ Dashboard Web](#️-dashboard-web)
+- [⏰ Programación Automática](#-programación-automática)
+- [🏗️ Arquitectura del Sistema](#️-arquitectura-del-sistema)
+- [🔧 Tecnologías Utilizadas](#-tecnologías-utilizadas)
+- [📈 Monitoreo y Logs](#-monitoreo-y-logs)
+- [🧪 Testing Automatizado y Validación](#-testing-automatizado-y-validación)
+- [🚀 Despliegue en Producción](#-despliegue-en-producción)
+- [📄 Documentación Adicional](#-documentación-adicional)
+- [🤝 Contribuir](#-contribuir)
+- [📋 Changelog](#-changelog)
+- [📞 Soporte](#-soporte)
+- [📜 Licencia](#-licencia)
+
 ## 📋 Descripción
 
 Sistema completo de web scraping desarrollado en Laravel 12 que extrae automáticamente las tasas de cambio del USD desde la página oficial del BCV (https://www.bcv.org.ve/). 
