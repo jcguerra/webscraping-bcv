@@ -97,7 +97,7 @@ php artisan bcv:scrape time
 
 ### **1. Clonar el Repositorio**
 ```bash
-git clone <repository-url>
+git clone https://github.com/jcguerra/webscraping-bcv.git
 cd webscraping-bcv
 ```
 
@@ -149,7 +149,59 @@ docker run --rm -u "$(id -u):$(id -g)" \
 # En producción (usar Supervisor - ver SCHEDULER_SETUP.md)
 ```
 
-### **5. Configurar Scheduler (Producción)**
+### **5. Verificar Instalación Exitosa**
+```bash
+# Verificar que el sistema está funcionando
+./vendor/bin/sail artisan bcv:scrape status
+
+# Ejecutar tests para validar instalación
+./vendor/bin/sail artisan test
+
+# Probar API básica
+curl -s http://localhost:8000/api/bcv/stats | jq .
+
+# Acceder al dashboard
+# Abrir: http://localhost:8000
+```
+
+### **6. Solución de Problemas Comunes**
+
+#### **🐛 Error: "Permission denied" en Docker**
+```bash
+# Cambiar permisos del directorio
+sudo chown -R $USER:$USER .
+chmod -R 755 storage bootstrap/cache
+```
+
+#### **🔌 Error: "Connection refused" en PostgreSQL**
+```bash
+# Verificar que los contenedores están corriendo
+./vendor/bin/sail ps
+
+# Reiniciar servicios si es necesario
+./vendor/bin/sail restart
+```
+
+#### **⚠️ Error: "Queue connection could not be established"**
+```bash
+# Verificar configuración de cola en .env
+echo "QUEUE_CONNECTION=database" >> .env
+
+# Recrear tablas de colas
+./vendor/bin/sail artisan queue:table
+./vendor/bin/sail artisan migrate
+```
+
+#### **🌐 Error: "cURL error 28: Timeout"**
+```bash
+# Verificar conectividad a BCV
+curl -I https://www.bcv.org.ve/
+
+# Ajustar timeout en .env si es necesario
+echo "BCV_TIMEOUT=60" >> .env
+```
+
+### **7. Configurar Scheduler (Producción)**
 ```bash
 # Agregar al crontab del servidor
 * * * * * cd /ruta/al/proyecto && php artisan schedule:run >> /dev/null 2>&1
@@ -695,8 +747,8 @@ MAIL_ADMIN_EMAIL=admin@tudominio.com
 
 Para preguntas, problemas o sugerencias:
 
-- **Issues**: [GitHub Issues](link-to-issues)
-- **Email**: [tu-email@dominio.com](mailto:tu-email@dominio.com)
+- **Issues**: [GitHub Issues](https://github.com/jcguerra/webscraping-bcv/issues)
+- **Email**: [jcguerra.dev@gmail.com](mailto:jcguerra.dev@gmail.com)
 - **Documentación**: Ver archivos `.md` en el repositorio
 
 ## 📜 Licencia

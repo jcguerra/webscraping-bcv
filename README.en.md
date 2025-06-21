@@ -97,7 +97,7 @@ php artisan bcv:scrape time
 
 ### **1. Clone Repository**
 ```bash
-git clone <repository-url>
+git clone https://github.com/jcguerra/webscraping-bcv.git
 cd webscraping-bcv
 ```
 
@@ -149,7 +149,59 @@ docker run --rm -u "$(id -u):$(id -g)" \
 # In production (use Supervisor - see SCHEDULER_SETUP.md)
 ```
 
-### **5. Configure Scheduler (Production)**
+### **5. Verify Successful Installation**
+```bash
+# Verify the system is working
+./vendor/bin/sail artisan bcv:scrape status
+
+# Run tests to validate installation
+./vendor/bin/sail artisan test
+
+# Test basic API
+curl -s http://localhost:8000/api/bcv/stats | jq .
+
+# Access dashboard
+# Open: http://localhost:8000
+```
+
+### **6. Common Issues Troubleshooting**
+
+#### **🐛 Error: "Permission denied" in Docker**
+```bash
+# Change directory permissions
+sudo chown -R $USER:$USER .
+chmod -R 755 storage bootstrap/cache
+```
+
+#### **🔌 Error: "Connection refused" in PostgreSQL**
+```bash
+# Verify containers are running
+./vendor/bin/sail ps
+
+# Restart services if necessary
+./vendor/bin/sail restart
+```
+
+#### **⚠️ Error: "Queue connection could not be established"**
+```bash
+# Verify queue configuration in .env
+echo "QUEUE_CONNECTION=database" >> .env
+
+# Recreate queue tables
+./vendor/bin/sail artisan queue:table
+./vendor/bin/sail artisan migrate
+```
+
+#### **🌐 Error: "cURL error 28: Timeout"**
+```bash
+# Verify BCV connectivity
+curl -I https://www.bcv.org.ve/
+
+# Adjust timeout in .env if necessary
+echo "BCV_TIMEOUT=60" >> .env
+```
+
+### **7. Configure Scheduler (Production)**
 ```bash
 # Add to server crontab
 * * * * * cd /path/to/project && php artisan schedule:run >> /dev/null 2>&1
@@ -496,8 +548,8 @@ MAIL_ADMIN_EMAIL=admin@yourdomain.com
 
 For questions, issues or suggestions:
 
-- **Issues**: [GitHub Issues](link-to-issues)
-- **Email**: [your-email@domain.com](mailto:your-email@domain.com)
+- **Issues**: [GitHub Issues](https://github.com/jcguerra/webscraping-bcv/issues)
+- **Email**: [jcguerra.dev@gmail.com](mailto:jcguerra.dev@gmail.com)
 - **Documentation**: See `.md` files in the repository
 
 ## 📜 License
