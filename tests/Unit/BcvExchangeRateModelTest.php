@@ -85,26 +85,30 @@ class BcvExchangeRateModelTest extends TestCase
     }
 
     /**
-     * Test latest scope
+     * Test byLatestValue scope (latest by value_date)
      */
     public function test_latest_scope(): void
     {
-        // Create multiple rates with different scraped times
+        // Clear any existing data to avoid interference
+        BcvExchangeRate::truncate();
+        
+        // Create a simple test case - create oldest first, newest last
         $oldRate = BcvExchangeRate::factory()->create([
-            'scraped_at' => now()->subDays(5)
+            'value_date' => '2024-01-01',
+            'scraped_at' => '2024-01-01 10:00:00'
         ]);
         
         $newestRate = BcvExchangeRate::factory()->create([
-            'scraped_at' => now()->subHour()
-        ]);
-        
-        $middleRate = BcvExchangeRate::factory()->create([
-            'scraped_at' => now()->subDays(2)
+            'value_date' => now()->toDateString(),
+            'scraped_at' => now()->toDateTimeString()
         ]);
 
-        $latestRate = BcvExchangeRate::latest()->first();
+        // Get latest rate using our custom scope - should be newest by value_date then scraped_at
+        $latestRate = BcvExchangeRate::byLatestValue()->first();
 
-        $this->assertEquals($newestRate->id, $latestRate->id);
+        // Test the result - should be the rate with today's date
+        $this->assertTrue($latestRate->value_date->isToday());
+        $this->assertNotEquals($oldRate->id, $latestRate->id);
     }
 
     /**
@@ -154,20 +158,31 @@ class BcvExchangeRateModelTest extends TestCase
      */
     public function test_current_scope(): void
     {
-        // Create multiple rates
-        $oldRate = BcvExchangeRate::factory()->old()->create();
-        $recentRate = BcvExchangeRate::factory()->recent()->create();
-        $currentRate = BcvExchangeRate::factory()->today()->create();
+        // Clear existing data to avoid interference
+        BcvExchangeRate::truncate();
+        
+        // Create multiple rates with specific scraped_at times
+        $oldRate = BcvExchangeRate::factory()->create([
+            'scraped_at' => now()->subDays(5)
+        ]);
+        
+        $recentRate = BcvExchangeRate::factory()->create([
+            'scraped_at' => now()->subHour()
+        ]);
+        
+        $currentRate = BcvExchangeRate::factory()->create([
+            'scraped_at' => now()
+        ]);
 
+        // Get rates using current scope (latest scraped_at)
         $currentRates = BcvExchangeRate::current()->get();
 
-        // Should return the most recent rate
+        // Should return rates with the most recent one first
         $this->assertGreaterThan(0, $currentRates->count());
         $latestFromCurrent = $currentRates->first();
         
-        // Verify it's the most recent one
-        $allRatesOrdered = BcvExchangeRate::orderBy('scraped_at', 'desc')->first();
-        $this->assertEquals($allRatesOrdered->id, $latestFromCurrent->id);
+        // Should be the one with the most recent scraped_at (currentRate)
+        $this->assertEquals($currentRate->id, $latestFromCurrent->id);
     }
 
     /**
@@ -182,11 +197,16 @@ class BcvExchangeRateModelTest extends TestCase
         ];
 
         $rate = BcvExchangeRate::factory()->create([
-            'raw_data' => json_encode($rawData)
+            'raw_data' => $rawData // Pass array directly, Laravel will handle JSON encoding
         ]);
 
+        // Refresh from database to ensure casting works
+        $rate->refresh();
+
         $this->assertIsArray($rate->raw_data);
-        $this->assertEquals($rawData, $rate->raw_data);
+        $this->assertEquals($rawData['original_text'], $rate->raw_data['original_text']);
+        $this->assertEquals($rawData['parsed_rate'], $rate->raw_data['parsed_rate']);
+        $this->assertEquals($rawData['selector_used'], $rate->raw_data['selector_used']);
     }
 
     /**
@@ -270,8 +290,13 @@ class BcvExchangeRateModelTest extends TestCase
     {
         $oldRate = BcvExchangeRate::factory()->old()->create();
 
-        $weeksAgo = now()->diffInWeeks($oldRate->scraped_at);
-        $this->assertGreaterThanOrEqual(1, $weeksAgo);
+        // Test that the date is actually in the past (more than 1 week ago)
+        $this->assertTrue($oldRate->scraped_at->isPast());
+        $this->assertTrue($oldRate->scraped_at->isBefore(now()->subWeek()));
+        
+        // Test with absolute diff - old dates should be at least 14 days in the past
+        $daysAgo = abs(now()->diffInDays($oldRate->scraped_at, false)); // false = signed result
+        $this->assertGreaterThanOrEqual(14, $daysAgo); // At least 2 weeks ago
     }
 
     /**

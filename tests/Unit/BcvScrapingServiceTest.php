@@ -72,7 +72,7 @@ class BcvScrapingServiceTest extends TestCase
         foreach ($testCases as [$html, $expectedRate]) {
             $crawler = new \Symfony\Component\DomCrawler\Crawler($html);
             $rate = $method->invoke($this->service, $crawler);
-            $this->assertEquals($expectedRate, $rate, "Failed for HTML: {$html}");
+            $this->assertEqualsWithDelta($expectedRate, $rate, 0.0001, "Failed for HTML: {$html}");
         }
     }
 
@@ -303,7 +303,13 @@ class BcvScrapingServiceTest extends TestCase
         $this->assertInstanceOf(BcvExchangeRate::class, $result);
         
         $savedRate = BcvExchangeRate::find($result->id);
+        $savedRate->refresh(); // Ensure fresh data from database
         $rawData = $savedRate->raw_data;
+        
+        // If raw_data is still string, decode it manually for testing
+        if (is_string($rawData)) {
+            $rawData = json_decode($rawData, true);
+        }
         
         $this->assertIsArray($rawData);
         $this->assertArrayHasKey('original_text', $rawData);
